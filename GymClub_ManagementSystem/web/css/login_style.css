@@ -1,0 +1,197 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : 26 May 2026, 5:24:07 pm
+    Author     : DELL
+*/
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    font-family: 'Poppins', sans-serif;
+    background: #0f172a;
+    overflow: hidden;
+}
+
+/* MAIN CONTAINER */
+
+.login-container{
+    width: 100%;
+    height: 100vh;
+    display: flex;
+}
+
+/* LEFT PANEL */
+
+.left-panel{
+    width: 60%;
+    position: relative;
+    background:
+        linear-gradient(rgba(0,0,0,0.5),
+        rgba(0,0,0,0.7)),
+        url('https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=1600');
+
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    padding: 80px;
+}
+
+.left-content{
+    position: relative;
+    z-index: 2;
+    color: white;
+    max-width: 550px;
+}
+
+.left-content h1{
+    font-size: 70px;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 20px;
+}
+
+.left-content p{
+    font-size: 18px;
+    color: #d1d5db;
+    line-height: 1.7;
+}
+
+/* RIGHT PANEL */
+
+.right-panel{
+    width: 40%;
+    background: #111827;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+}
+
+/* LOGIN BOX */
+
+.login-box{
+    width: 100%;
+    max-width: 420px;
+}
+
+.login-box h2{
+    color: white;
+    font-size: 40px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.subtitle{
+    color: #9ca3af;
+    margin-bottom: 40px;
+}
+
+/* INPUT */
+
+.input-group-custom{
+    background: #1f2937;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    padding: 0 18px;
+    border: 1px solid transparent;
+    transition: 0.3s;
+}
+
+.input-group-custom:focus-within{
+    border-color: #22c55e;
+}
+
+.input-group-custom i{
+    color: #9ca3af;
+    font-size: 16px;
+}
+
+.input-group-custom input{
+    width: 100%;
+    padding: 18px 15px;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: white;
+    font-size: 15px;
+}
+
+.input-group-custom input::placeholder{
+    color: #9ca3af;
+}
+
+/* EXTRA OPTIONS */
+
+.extra-options{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #d1d5db;
+    font-size: 14px;
+    margin-bottom: 30px;
+}
+
+.extra-options a{
+    color: #22c55e;
+    text-decoration: none;
+}
+
+/* BUTTON */
+
+.btn-login{
+    width: 100%;
+    padding: 18px;
+    border: none;
+    border-radius: 15px;
+    background: #22c55e;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.btn-login:hover{
+    background: #16a34a;
+}
+
+/* REGISTER */
+
+.register-text{
+    text-align: center;
+    margin-top: 30px;
+    color: #9ca3af;
+}
+
+.register-text a{
+    color: #22c55e;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+/* RESPONSIVE */
+
+@media(max-width: 992px){
+
+    .left-panel{
+        display: none;
+    }
+
+    .right-panel{
+        width: 100%;
+    }
+
+    body{
+        overflow: auto;
+    }
+
+}
