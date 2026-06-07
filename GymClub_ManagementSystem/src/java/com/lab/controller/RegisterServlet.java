@@ -4,22 +4,26 @@
  */
 package com.lab.controller;
 
-import com.lab.dao.AttendanceDAO;
-import com.lab.model.Attendance;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import com.lab.util.DBConnection;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
+
 
 /**
  *
- * @author DELL
+ * @author ASUS
  */
-public class AttendanceServlet extends HttpServlet {
+
+public class RegisterServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -38,10 +42,10 @@ public class AttendanceServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet AttendanceServlet</title>");
+            out.println("<title>Servlet RegisterServlet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet AttendanceServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet RegisterServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -57,23 +61,10 @@ public class AttendanceServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-  protected void doGet(HttpServletRequest request,
-                         HttpServletResponse response)
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        AttendanceDAO dao = new AttendanceDAO();
-
-        List<Attendance> attendanceList =
-                dao.getAllAttendance();
-
-        request.setAttribute("attendanceList", attendanceList);
-
-        request.getRequestDispatcher(
-                "trainer/trainer_attendance.jsp")
-                .forward(request, response);
-
+        processRequest(request, response);
     }
-
 
     /**
      * Handles the HTTP <code>POST</code> method.
@@ -84,10 +75,84 @@ public class AttendanceServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
+    protected void doPost(HttpServletRequest request,
+                          HttpServletResponse response)
+                          throws ServletException, IOException {
+
+        // 1. Get form data from register.jsp
+        String fullName =
+                request.getParameter("full_name");
+
+        String email =
+                request.getParameter("email");
+
+        String phone =
+                request.getParameter("phone_number");
+
+        String password =
+                request.getParameter("password");
+        try {
+
+    Connection conn = DBConnection.getConnection();
+
+    String sql =
+        "INSERT INTO users(full_name,email,phone_number,password,role) VALUES (?,?,?,?,?)";
+
+    PreparedStatement ps =
+        conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+
+    ps.setString(1, fullName);
+    ps.setString(2, email);
+    ps.setString(3, phone);
+    ps.setString(4, password);
+    ps.setString(5, "Member");
+
+    ps.executeUpdate();
+
+    ResultSet rs = ps.getGeneratedKeys();
+
+    int userId = 0;
+
+    if (rs.next()) {
+        userId = rs.getInt(1);
     }
+
+    String sql2 =
+        "INSERT INTO membership(user_id,status) VALUES (?,?)";
+
+    PreparedStatement ps2 = conn.prepareStatement(sql2);
+
+    ps2.setInt(1, userId);
+    ps2.setString(2, "Pending");
+
+    ps2.executeUpdate();
+
+    // ⭐ IMPORTANT: ALWAYS REDIRECT
+    response.sendRedirect("login.jsp");
+
+} catch (Exception e) {
+
+    // Check duplicate email error
+    if (e.getMessage() != null &&
+        e.getMessage().contains("Duplicate entry")) {
+
+        // Redirect back with error flag
+        response.sendRedirect(
+            "register.jsp?error=duplicate"
+        );
+
+    } else {
+
+        e.printStackTrace();
+
+        response.sendRedirect(
+            "register.jsp?error=other"
+        );
+    }
+}
+    }
+    
+
 
     /**
      * Returns a short description of the servlet.
@@ -100,4 +165,3 @@ public class AttendanceServlet extends HttpServlet {
     }// </editor-fold>
 
 }
-

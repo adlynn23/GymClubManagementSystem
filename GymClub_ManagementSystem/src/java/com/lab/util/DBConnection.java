@@ -9,29 +9,37 @@ package com.lab.util;
  * @author DELL
  */
 
+
 import java.sql.Connection;
+
 import java.sql.DriverManager;
 
+/*
+ * This class handles database connection
+ * to gym_db
+ */
 public class DBConnection {
 
-    public static Connection getConnection(){
+    private static final String URL
+            = "jdbc:mysql://localhost:3307/gym_db";
 
-        Connection con = null;
+    private static final String USER = "root";
+    private static final String PASSWORD = "";
 
-        try{
+    public static Connection getConnection() {
 
+        Connection conn = null;
+
+        try {
             Class.forName("com.mysql.cj.jdbc.Driver");
 
-            con = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3307/gym_system",
-                    "root",
-                    ""
-            );
+            conn = DriverManager.getConnection(
+                    URL, USER, PASSWORD);
 
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return con;
+        return conn;
     }
 }
