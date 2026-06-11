@@ -114,7 +114,7 @@
                     <div class="register-text">
 
                         Don't have an account?
-                        <a href="register.jsp">
+                        <a href="student/register.jsp">
                             Register
                         </a>
 

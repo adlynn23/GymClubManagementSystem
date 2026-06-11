@@ -4,17 +4,12 @@
  */
 package com.lab.controller;
 
+import com.lab.dao.UserDAO;
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import com.lab.util.DBConnection;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
 
 
 
@@ -25,143 +20,34 @@ import java.sql.Statement;
 
 public class RegisterServlet extends HttpServlet {
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet RegisterServlet</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet RegisterServlet at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+        
+        // 1. Get form data
+        String fullname = request.getParameter("fullname");
+        String email = request.getParameter("email");
+        String password = request.getParameter("password");
+
+        // DEBUG: Print to Tomcat console to ensure data is arriving
+        System.out.println("DEBUG - Fullname received: " + fullname);
+        System.out.println("DEBUG - Email received: " + email);
+        System.out.println("DEBUG - Password received: " + password);
+
+        // 2. Pass to DAO
+        UserDAO dao = new UserDAO();
+        
+        // ---> THIS WAS THE MISSING LINE! <---
+        // This line actually calls the database and stores the result in 'success'
+        boolean success = dao.registerStudentWithTrial(fullname, email, password);
+
+        // 3. Respond to user
+        if (success) {
+            request.setAttribute("message", "Registration successful! Your 7-day free trial has started. Please login.");
+            request.getRequestDispatcher("login.jsp").forward(request, response);
+        } else {
+            request.setAttribute("message", "Registration failed. Email might already exist.");
+            request.getRequestDispatcher("student/register.jsp").forward(request, response);
         }
     }
-
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
-    }
-
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doPost(HttpServletRequest request,
-                          HttpServletResponse response)
-                          throws ServletException, IOException {
-
-        // 1. Get form data from register.jsp
-        String fullName =
-                request.getParameter("full_name");
-
-        String email =
-                request.getParameter("email");
-
-        String phone =
-                request.getParameter("phone_number");
-
-        String password =
-                request.getParameter("password");
-        try {
-
-    Connection conn = DBConnection.getConnection();
-
-    String sql =
-        "INSERT INTO users(full_name,email,phone_number,password,role) VALUES (?,?,?,?,?)";
-
-    PreparedStatement ps =
-        conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-
-    ps.setString(1, fullName);
-    ps.setString(2, email);
-    ps.setString(3, phone);
-    ps.setString(4, password);
-    ps.setString(5, "Member");
-
-    ps.executeUpdate();
-
-    ResultSet rs = ps.getGeneratedKeys();
-
-    int userId = 0;
-
-    if (rs.next()) {
-        userId = rs.getInt(1);
-    }
-
-    String sql2 =
-        "INSERT INTO membership(user_id,status) VALUES (?,?)";
-
-    PreparedStatement ps2 = conn.prepareStatement(sql2);
-
-    ps2.setInt(1, userId);
-    ps2.setString(2, "Pending");
-
-    ps2.executeUpdate();
-
-    // ⭐ IMPORTANT: ALWAYS REDIRECT
-    response.sendRedirect("login.jsp");
-
-} catch (Exception e) {
-
-    // Check duplicate email error
-    if (e.getMessage() != null &&
-        e.getMessage().contains("Duplicate entry")) {
-
-        // Redirect back with error flag
-        response.sendRedirect(
-            "register.jsp?error=duplicate"
-        );
-
-    } else {
-
-        e.printStackTrace();
-
-        response.sendRedirect(
-            "register.jsp?error=other"
-        );
-    }
-}
-    }
-    
-
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
-
 }
