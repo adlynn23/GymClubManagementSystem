@@ -1,24 +1,23 @@
 <%-- 
-    Document   : login
-    Created on : 26 May 2026, 5:23:22 pm
-    Author     : DELL
+    Document   : register
+    Created on : 7 Jun 2026, 1:11:57 pm
+    Author     : ASUS
 --%>
 
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html" pageEncoding="UTF-8"%>
+
 <!DOCTYPE html>
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>Login | UniGym</title>
+        <title>Register | UniGym</title>
 
-        <!-- Bootstrap -->
+        <!-- SAME CSS AS LOGIN -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-        <!-- Icons -->
         <link rel="stylesheet"
               href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-        <!-- CSS -->
         <link rel="stylesheet" href="css/login_style.css">
 
     </head>
@@ -27,7 +26,7 @@
 
         <div class="login-container">
 
-            <!-- LEFT SIDE -->
+            <!-- LEFT SIDE (same as login) -->
             <div class="left-panel">
 
                 <div class="overlay"></div>
@@ -35,16 +34,15 @@
                 <div class="left-content">
 
                     <h1>
-                        Push Your Limits.
+                        Start Your Fitness Journey
                     </h1>
 
                     <p>
-                        Access your gym dashboard, attendance,
-                        bookings and membership in one place.
+                        Create an account to access gym booking,
+                        attendance, and membership features.
                     </p>
 
                 </div>
-
             </div>
 
             <!-- RIGHT SIDE -->
@@ -52,70 +50,64 @@
 
                 <div class="login-box">
 
-                    <h2>Welcome Back</h2>
+                    <h2>Create Account</h2>
 
                     <p class="subtitle">
-                        Login to continue your fitness journey
+                        Register to join UniGym
                     </p>
 
-                    <form action="LoginServlet" method="POST">
+                    <!-- REGISTER FORM -->
+                    <form action="RegisterServlet" method="POST">
+
+                        <!-- FULL NAME -->
+                        <div class="input-group-custom">
+                            <i class="fa-solid fa-user"></i>
+                            <input type="text"
+                                   name="full_name"
+                                   placeholder="Full Name"
+                                   required>
+                        </div>
 
                         <!-- EMAIL -->
-
                         <div class="input-group-custom">
-
                             <i class="fa-solid fa-envelope"></i>
-
                             <input type="email"
                                    name="email"
-                                   placeholder="Enter your email"
+                                   placeholder="Email"
                                    required>
+                        </div>
 
+                        <!-- PHONE -->
+                        <div class="input-group-custom">
+                            <i class="fa-solid fa-phone"></i>
+                            <input type="text"
+                                   name="phone_number"
+                                   placeholder="Phone Number"
+                                   required>
                         </div>
 
                         <!-- PASSWORD -->
-
                         <div class="input-group-custom">
-
                             <i class="fa-solid fa-lock"></i>
-
                             <input type="password"
                                    name="password"
-                                   placeholder="Enter your password"
+                                   placeholder="Password"
                                    required>
-
-                        </div>
-
-                        <!-- REMEMBER -->
-
-                        <div class="extra-options">
-
-                            <div>
-                                <input type="checkbox">
-                                Remember me
-                            </div>
-
-                            <a href="#">
-                                Forgot Password?
-                            </a>
-
                         </div>
 
                         <!-- BUTTON -->
-
                         <button type="submit" class="btn-login">
-                            Login
+                            Register
                         </button>
 
                     </form>
 
-                    <!-- REGISTER -->
-
+                    <!-- BACK TO LOGIN -->
                     <div class="register-text">
 
-                        Don't have an account?
-                        <a href="register.jsp">
-                            Register
+                        Already have an account?
+                        <a href="login.jsp">
+                            Login
                         </a>
 
                     </div>
@@ -127,39 +119,20 @@
         </div>
         <%
             String error = request.getParameter("error");
-            String login = request.getParameter("login");
 
-            if ("invalid".equals(error)) {
+            if ("duplicate".equals(error)) {
         %>
 
         <script>
-            alert("Invalid login details!");
+            alert("Email already exists! Please use another email.");
         </script>
 
         <%
-        } else if ("notfound".equals(error)) {
+        } else if ("other".equals(error)) {
         %>
 
         <script>
-            alert("Account not found! Please register first.");
-        </script>
-
-        <%
-        } else if ("wrongpass".equals(error)) {
-        %>
-
-        <script>
-            alert("Wrong password! Please try again.");
-        </script>
-
-        <%
-            }
-
-            if ("success".equals(login)) {
-        %>
-
-        <script>
-            alert("Login successful!");
+            alert("Something went wrong. Please try again.");
         </script>
 
         <%
