@@ -1,64 +1,48 @@
-<%-- 
-    Document   : register
-    Created on : Jun 11, 2026, 9:54:29 AM
-    Author     : batrisyia aliza
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Register | UniGym</title>
+    <title>Student Registration | UniGym</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    
-    <link rel="stylesheet" href="../css/login_style.css"> 
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/app.css">
 </head>
 <body>
-    <div class="login-container">
-        <div class="left-panel">
-            <div class="overlay"></div>
-            <div class="left-content">
-                <h1>Start Your Fitness Journey.</h1>
-                <p>Register today and instantly claim your 7-Day Free Trial to access our premium campus facilities.</p>
-            </div>
-        </div>
-
-        <div class="right-panel">
-            <div class="login-box">
-                <h2>Create Account</h2>
-                <p class="subtitle">Join UniGym as a Student</p>
-
-                <% if(request.getAttribute("message") != null) { %>
-                    <div class="alert alert-info"><%= request.getAttribute("message") %></div>
-                <% } %>
-
-                <form action="../RegisterServlet" method="POST">
-                    
-                    <div class="input-group-custom">
-                        <i class="fa-solid fa-user"></i>
-                        <input type="text" name="fullname" placeholder="Full Name" required>
+<main class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7 col-lg-6">
+            <div class="content-panel p-4">
+                <h1 class="h3">Create Student Account</h1>
+                <p class="text-muted">Register as a student to manage memberships, bookings, attendance, and payments.</p>
+                <c:if test="${not empty error}">
+                    <div class="alert alert-danger">${error}</div>
+                </c:if>
+                <form action="${pageContext.request.contextPath}/RegisterServlet" method="post">
+                    <div class="mb-3">
+                        <label class="form-label" for="fullName">Full Name</label>
+                        <input class="form-control" type="text" id="fullName" name="fullName" maxlength="100" required>
                     </div>
-
-                    <div class="input-group-custom">
-                        <i class="fa-solid fa-envelope"></i>
-                        <input type="email" name="email" placeholder="Student Email" required>
+                    <div class="mb-3">
+                        <label class="form-label" for="email">Email</label>
+                        <input class="form-control" type="email" id="email" name="email" maxlength="100" required>
                     </div>
-
-                    <div class="input-group-custom">
-                        <i class="fa-solid fa-lock"></i>
-                        <input type="password" name="password" placeholder="Create Password" required>
+                    <div class="mb-3">
+                        <label class="form-label" for="phone">Phone</label>
+                        <input class="form-control" type="text" id="phone" name="phone" maxlength="20">
                     </div>
-
-                    <button type="submit" class="btn-login">Start Free Trial</button>
+                    <div class="mb-3">
+                        <label class="form-label" for="password">Password</label>
+                        <input class="form-control" type="password" id="password" name="password" minlength="4" required>
+                    </div>
+                    <button class="btn btn-primary w-100" type="submit">Register</button>
                 </form>
-
-                <div class="register-text">
-                    Already have an account? <a href="../login.jsp">Login here</a>
+                <div class="mt-3 text-center">
+                    <a href="${pageContext.request.contextPath}/login.jsp">Back to login</a>
                 </div>
             </div>
         </div>
     </div>
+</main>
 </body>
 </html>

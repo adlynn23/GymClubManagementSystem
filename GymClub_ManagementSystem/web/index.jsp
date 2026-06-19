@@ -23,9 +23,6 @@
     </head>
 
     <body>
-        <%
-            String name = (String) session.getAttribute("name");
-        %>
         <!-- NAVBAR -->
         <nav class="navbar navbar-expand-lg navbar-dark custom-navbar fixed-top">
             <div class="container">

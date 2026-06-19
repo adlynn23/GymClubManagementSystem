@@ -1,49 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app version="4.0" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd">
-    
+<web-app version="4.0" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd">
+
+    <filter>
+        <filter-name>AuthFilter</filter-name>
+        <filter-class>com.lab.filter.AuthFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>AuthFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <servlet><servlet-name>LoginServlet</servlet-name><servlet-class>com.lab.controller.LoginServlet</servlet-class></servlet>
+    <servlet><servlet-name>RegisterServlet</servlet-name><servlet-class>com.lab.controller.RegisterServlet</servlet-class></servlet>
+    <servlet><servlet-name>LogoutServlet</servlet-name><servlet-class>com.lab.controller.LogoutServlet</servlet-class></servlet>
+    <servlet><servlet-name>DashboardServlet</servlet-name><servlet-class>com.lab.controller.DashboardServlet</servlet-class></servlet>
+    <servlet><servlet-name>MembershipServlet</servlet-name><servlet-class>com.lab.controller.MembershipServlet</servlet-class></servlet>
+    <servlet><servlet-name>ScheduleServlet</servlet-name><servlet-class>com.lab.controller.ScheduleServlet</servlet-class></servlet>
+    <servlet><servlet-name>BookingServlet</servlet-name><servlet-class>com.lab.controller.BookingServlet</servlet-class></servlet>
+    <servlet><servlet-name>AttendanceServlet</servlet-name><servlet-class>com.lab.controller.AttendanceServlet</servlet-class></servlet>
+    <servlet><servlet-name>BillingServlet</servlet-name><servlet-class>com.lab.controller.BillingServlet</servlet-class></servlet>
+    <servlet><servlet-name>PaymentServlet</servlet-name><servlet-class>com.lab.controller.PaymentServlet</servlet-class></servlet>
+
+    <servlet-mapping><servlet-name>LoginServlet</servlet-name><url-pattern>/LoginServlet</url-pattern></servlet-mapping>
+    <servlet-mapping><servlet-name>RegisterServlet</servlet-name><url-pattern>/RegisterServlet</url-pattern></servlet-mapping>
+    <servlet-mapping><servlet-name>LogoutServlet</servlet-name><url-pattern>/LogoutServlet</url-pattern></servlet-mapping>
+    <servlet-mapping><servlet-name>DashboardServlet</servlet-name><url-pattern>/dashboard</url-pattern></servlet-mapping>
+    <servlet-mapping><servlet-name>MembershipServlet</servlet-name><url-pattern>/MembershipServlet</url-pattern></servlet-mapping>
+    <servlet-mapping><servlet-name>ScheduleServlet</servlet-name><url-pattern>/ScheduleServlet</url-pattern></servlet-mapping>
+    <servlet-mapping><servlet-name>BookingServlet</servlet-name><url-pattern>/BookingServlet</url-pattern></servlet-mapping>
+    <servlet-mapping><servlet-name>AttendanceServlet</servlet-name><url-pattern>/AttendanceServlet</url-pattern></servlet-mapping>
+    <servlet-mapping><servlet-name>BillingServlet</servlet-name><url-pattern>/BillingServlet</url-pattern></servlet-mapping>
+    <servlet-mapping><servlet-name>PaymentServlet</servlet-name><url-pattern>/PaymentServlet</url-pattern></servlet-mapping>
+
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
 
-    <servlet>
-        <servlet-name>AttendanceServlet</servlet-name>
-        <servlet-class>com.lab.controller.AttendanceServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>AttendanceServlet</servlet-name>
-        <url-pattern>/AttendanceServlet</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
-        <servlet-name>RegisterServlet</servlet-name>
-        <servlet-class>com.lab.controller.RegisterServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>RegisterServlet</servlet-name>
-        <url-pattern>/RegisterServlet</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
-        <servlet-name>LoginServlet</servlet-name>
-        <servlet-class>com.lab.controller.LoginServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>LoginServlet</servlet-name>
-        <url-pattern>/LoginServlet</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
-        <servlet-name>DashboardServlet</servlet-name>
-        <servlet-class>com.lab.controller.DashboardServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>DashboardServlet</servlet-name>
-        <url-pattern>/dashboard</url-pattern>
-    </servlet-mapping>
-
     <session-config>
-        <session-timeout>
-            30
-        </session-timeout>
+        <session-timeout>30</session-timeout>
     </session-config>
 </web-app>

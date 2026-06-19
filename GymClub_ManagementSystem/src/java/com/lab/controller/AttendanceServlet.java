@@ -1,103 +1,108 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
 package com.lab.controller;
 
 import com.lab.dao.AttendanceDAO;
-import com.lab.model.Attendance;
+import com.lab.dao.MembershipDAO;
+import com.lab.dao.ScheduleDAO;
+import com.lab.dao.UserDAO;
+import com.lab.util.AuthUtil;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.List;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- *
- * @author DELL
- */
 public class AttendanceServlet extends HttpServlet {
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet AttendanceServlet</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet AttendanceServlet at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
-    }
+    private final AttendanceDAO attendanceDAO = new AttendanceDAO();
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
-  protected void doGet(HttpServletRequest request,
-                         HttpServletResponse response)
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        if (!AuthUtil.requireRole(request, response, "STUDENT", "TRAINER", "MANAGER")) {
+            return;
+        }
 
-        AttendanceDAO dao = new AttendanceDAO();
+        String action = request.getParameter("action");
+        String role = AuthUtil.getRole(request);
 
-        List<Attendance> attendanceList =
-                dao.getAllAttendance();
+        if ("form".equals(action) && "TRAINER".equals(role)) {
+            request.setAttribute("students", new UserDAO().getUsersByRole("STUDENT"));
+            request.setAttribute("schedules", new ScheduleDAO().getByTrainer(AuthUtil.getUserID(request)));
+            request.getRequestDispatcher("/attendanceForm.jsp").forward(request, response);
+            return;
+        }
 
-        request.setAttribute("attendanceList", attendanceList);
+        if ("delete".equals(action) && "MANAGER".equals(role)) {
+            attendanceDAO.delete(parseInt(request.getParameter("id")));
+            response.sendRedirect("AttendanceServlet?action=report");
+            return;
+        }
 
-        request.getRequestDispatcher(
-                "trainer/trainer_attendance.jsp")
-                .forward(request, response);
+        if ("report".equals(action) && "MANAGER".equals(role)) {
+            request.setAttribute("attendanceList", attendanceDAO.getAllAttendance());
+            request.getRequestDispatcher("/attendanceReport.jsp").forward(request, response);
+            return;
+        }
 
+        if ("TRAINER".equals(role)) {
+            request.setAttribute("attendanceList", attendanceDAO.getByTrainer(AuthUtil.getUserID(request)));
+        } else if ("MANAGER".equals(role)) {
+            request.setAttribute("attendanceList", attendanceDAO.getAllAttendance());
+        } else {
+            request.setAttribute("attendanceList", attendanceDAO.getByStudent(AuthUtil.getUserID(request)));
+        }
+        request.getRequestDispatcher("/attendanceList.jsp").forward(request, response);
     }
 
-
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        if (!AuthUtil.requireRole(request, response, "STUDENT", "TRAINER")) {
+            return;
+        }
+
+        String action = request.getParameter("action");
+        if ("checkin".equals(action) && "STUDENT".equals(AuthUtil.getRole(request))) {
+            if (!new MembershipDAO().hasActiveMembership(AuthUtil.getUserID(request))) {
+                request.setAttribute("error", "Only students with Active memberships can check in.");
+                request.setAttribute("attendanceList", attendanceDAO.getByStudent(AuthUtil.getUserID(request)));
+                request.getRequestDispatcher("/attendanceList.jsp").forward(request, response);
+                return;
+            }
+            attendanceDAO.createCheckIn(AuthUtil.getUserID(request));
+            response.sendRedirect("AttendanceServlet");
+            return;
+        }
+
+        if ("checkout".equals(action) && "STUDENT".equals(AuthUtil.getRole(request))) {
+            attendanceDAO.checkOut(parseInt(request.getParameter("attendanceID")), AuthUtil.getUserID(request));
+            response.sendRedirect("AttendanceServlet");
+            return;
+        }
+
+        if ("mark".equals(action) && "TRAINER".equals(AuthUtil.getRole(request))) {
+            int scheduleID = parseInt(request.getParameter("scheduleID"));
+            if (!attendanceDAO.classHasStarted(scheduleID)) {
+                request.setAttribute("error", "Attendance can only be marked after the class starts.");
+                request.setAttribute("students", new UserDAO().getUsersByRole("STUDENT"));
+                request.setAttribute("schedules", new ScheduleDAO().getByTrainer(AuthUtil.getUserID(request)));
+                request.getRequestDispatcher("/attendanceForm.jsp").forward(request, response);
+                return;
+            }
+            attendanceDAO.createClassAttendance(parseInt(request.getParameter("studentID")), scheduleID,
+                    request.getParameter("attendanceStatus"));
+            response.sendRedirect("AttendanceServlet");
+            return;
+        }
+
+        if ("update".equals(action) && "TRAINER".equals(AuthUtil.getRole(request))) {
+            attendanceDAO.updateStatus(parseInt(request.getParameter("attendanceID")),
+                    request.getParameter("attendanceStatus"));
+            response.sendRedirect("AttendanceServlet");
+        }
     }
 
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
-
+    private int parseInt(String value) {
+        return value == null || value.isEmpty() ? 0 : Integer.parseInt(value);
+    }
 }
-

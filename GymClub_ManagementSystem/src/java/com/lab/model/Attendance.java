@@ -1,37 +1,40 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.lab.model;
 
-/**
- *
- * @author DELL
- */
+import java.sql.Timestamp;
 
 public class Attendance {
 
-    private int attendanceId;
-    private int studentId;
+    private int attendanceID;
+    private int studentID;
+    private int scheduleID;
     private String studentName;
-    private String attendanceDate;
-    private String checkInTime;
-    private String status;
+    private String className;
+    private Timestamp checkInTime;
+    private Timestamp checkOutTime;
+    private String attendanceStatus;
 
-    public int getAttendanceId() {
-        return attendanceId;
+    public int getAttendanceID() {
+        return attendanceID;
     }
 
-    public void setAttendanceId(int attendanceId) {
-        this.attendanceId = attendanceId;
+    public void setAttendanceID(int attendanceID) {
+        this.attendanceID = attendanceID;
     }
 
-    public int getStudentId() {
-        return studentId;
+    public int getStudentID() {
+        return studentID;
     }
 
-    public void setStudentId(int studentId) {
-        this.studentId = studentId;
+    public void setStudentID(int studentID) {
+        this.studentID = studentID;
+    }
+
+    public int getScheduleID() {
+        return scheduleID;
+    }
+
+    public void setScheduleID(int scheduleID) {
+        this.scheduleID = scheduleID;
     }
 
     public String getStudentName() {
@@ -42,27 +45,35 @@ public class Attendance {
         this.studentName = studentName;
     }
 
-    public String getAttendanceDate() {
-        return attendanceDate;
+    public String getClassName() {
+        return className;
     }
 
-    public void setAttendanceDate(String attendanceDate) {
-        this.attendanceDate = attendanceDate;
+    public void setClassName(String className) {
+        this.className = className;
     }
 
-    public String getCheckInTime() {
+    public Timestamp getCheckInTime() {
         return checkInTime;
     }
 
-    public void setCheckInTime(String checkInTime) {
+    public void setCheckInTime(Timestamp checkInTime) {
         this.checkInTime = checkInTime;
     }
 
-    public String getStatus() {
-        return status;
+    public Timestamp getCheckOutTime() {
+        return checkOutTime;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setCheckOutTime(Timestamp checkOutTime) {
+        this.checkOutTime = checkOutTime;
+    }
+
+    public String getAttendanceStatus() {
+        return attendanceStatus;
+    }
+
+    public void setAttendanceStatus(String attendanceStatus) {
+        this.attendanceStatus = attendanceStatus;
     }
 }
